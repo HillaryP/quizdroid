@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -24,7 +27,8 @@ public class MarvelQuiz extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marvel_quiz);
-        this.ids = new View[]{findViewById(R.id.answer1), findViewById(R.id.answer2), findViewById(R.id.answer3)};
+        this.ids = new View[]{findViewById(R.id.answer1), findViewById(R.id.answer2),
+                findViewById(R.id.answer3), findViewById(R.id.answer4)};
         this.score = 0;
         this.numQuestions = 1;
         this.index = 0;
@@ -35,7 +39,7 @@ public class MarvelQuiz extends ActionBarActivity {
         setLayout();
     }
 
-    public void enableSumbit(View v) {
+    public void enableSubmit(View v) {
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(true);
     }
@@ -46,18 +50,21 @@ public class MarvelQuiz extends ActionBarActivity {
                 new String[] {
                 "Grey",
                 "Blue",
-                "Red"
+                "Red",
+                "Yellow"
         });
         qAndA.put("Marvel Comics co-owns the trademark to the phrase \"super hero\" with which company?",
                 new String[] {
                 "DC Comics",
                 "Pixar",
-                "Disney"
+                "Disney",
+                "Google"
         });
         qAndA.put("Who is the founder of Marvel Comics?", new String[] {
                 "Martin Goodman",
                 "Stan Lee",
-                "Steve Ditko"
+                "Steve Ditko",
+                "Joe Biden"
         });
         for (String s : qAndA.keySet()) {
             quiz.addQuestion(s, qAndA.get(s));
@@ -67,10 +74,12 @@ public class MarvelQuiz extends ActionBarActivity {
     public void setLayout() {
         TextView question = (TextView) findViewById(R.id.question);
         question.setText(quiz.questions.get(this.index));
-        String[] answers = quiz.answers.get(this.index);
-        for (int i = 0; i < answers.length; i++) {
+        String[] answerArray = quiz.answers.get(this.index);
+        List<String> answers = Arrays.asList(answerArray);
+        Collections.shuffle(answers);
+        for (int i = 0; i < answers.size(); i++) {
             TextView answer = (TextView) ids[i];
-            answer.setText(answers[i]);
+            answer.setText(answers.get(i));
         }
         TextView title = (TextView) findViewById(R.id.title);
         title.setText("Math Quiz: Question " + numQuestions);
@@ -79,6 +88,7 @@ public class MarvelQuiz extends ActionBarActivity {
     }
 
     public void submit(View v) {
+        this.numQuestions++;
         this.index++;
         Log.i("MarvelQuiz", "Index is " + this.index);
         if (index < quiz.questions.size()) {

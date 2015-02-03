@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -24,7 +27,8 @@ public class MathQuiz extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_quiz);
-        this.ids = new View[]{findViewById(R.id.answer1), findViewById(R.id.answer2), findViewById(R.id.answer3)};
+        this.ids = new View[]{findViewById(R.id.answer1), findViewById(R.id.answer2),
+                findViewById(R.id.answer3), findViewById(R.id.answer4)};
         this.score = 0;
         this.numQuestions = 1;
         this.index = 0;
@@ -35,7 +39,7 @@ public class MathQuiz extends ActionBarActivity {
         setLayout();
     }
 
-    public void enableSumbit(View v) {
+    public void enableSubmit(View v) {
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(true);
     }
@@ -45,22 +49,26 @@ public class MathQuiz extends ActionBarActivity {
         qAndA.put("2 + 18", new String[] {
                 "20",
                 "36",
-                "42"
+                "42",
+                "22"
         });
         qAndA.put("Integrate 1/n", new String[] {
                 "ln|n| + c",
                 "log(n) + c",
-                "log|n| + c"
+                "log|n| + c",
+                "ln(n + c)"
         });
         qAndA.put("Differentiate sin(x)", new String[] {
                 "cos(x)",
                 "-cos(x)",
-                "cos(x)sin(x)"
+                "cos(x)sin(x)",
+                "sin(x)/cos(x)"
         });
         qAndA.put("What is 20% of 50% of 100?", new String[] {
                 "10",
                 "20",
-                "25"
+                "25",
+                "22"
         });
         for (String s : qAndA.keySet()) {
             mathQuiz.addQuestion(s, qAndA.get(s));
@@ -70,10 +78,12 @@ public class MathQuiz extends ActionBarActivity {
     public void setLayout() {
         TextView question = (TextView) findViewById(R.id.question);
         question.setText(mathQuiz.questions.get(this.index));
-        String[] answers = mathQuiz.answers.get(this.index);
-        for (int i = 0; i < answers.length; i++) {
+        String[] answerArray = mathQuiz.answers.get(this.index);
+        List<String> answers = Arrays.asList(answerArray);
+        Collections.shuffle(answers);
+        for (int i = 0; i < answers.size(); i++) {
             TextView answer = (TextView) ids[i];
-            answer.setText(answers[i]);
+            answer.setText(answers.get(i));
         }
         TextView title = (TextView) findViewById(R.id.title);
         title.setText("Math Quiz: Question " + numQuestions);

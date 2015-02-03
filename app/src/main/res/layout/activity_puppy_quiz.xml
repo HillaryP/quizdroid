@@ -9,7 +9,8 @@
 
     <TextView android:text="Puppy Quiz: Question 1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/title"/>
 
     <TextView android:text=""
         android:id="@+id/question"
@@ -31,6 +32,11 @@
             android:onClick="enableSubmit"/>
         <RadioButton android:text=""
             android:id="@+id/answer3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="enableSubmit"/>
+        <RadioButton android:text=""
+            android:id="@+id/answer4"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:onClick="enableSubmit"/>

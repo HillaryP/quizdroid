@@ -9,7 +9,8 @@
 
     <TextView android:text="Marvel Quiz: Question 1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/title"/>
 
     <TextView android:text=""
         android:id="@+id/question"
@@ -34,11 +35,16 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:onClick="enableSubmit"/>
+        <RadioButton android:text=""
+            android:id="@+id/answer4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="enableSubmit"/>
     </RadioGroup>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/next"
         android:text="Submit"
-        android:onClick="submit"/>
+        android:onClick="submit" />
 </LinearLayout>

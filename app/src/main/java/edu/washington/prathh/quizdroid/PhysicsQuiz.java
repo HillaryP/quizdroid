@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -24,7 +27,8 @@ public class PhysicsQuiz extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_physics_quiz);
-        this.ids = new View[]{findViewById(R.id.answer1), findViewById(R.id.answer2), findViewById(R.id.answer3)};
+        this.ids = new View[]{findViewById(R.id.answer1), findViewById(R.id.answer2),
+                findViewById(R.id.answer3), findViewById(R.id.answer4)};
         this.score = 0;
         this.numQuestions = 1;
         this.index = 0;
@@ -35,7 +39,7 @@ public class PhysicsQuiz extends ActionBarActivity {
         setLayout();
     }
 
-    public void enableSumbit(View v) {
+    public void enableSubmit(View v) {
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(true);
     }
@@ -45,23 +49,27 @@ public class PhysicsQuiz extends ActionBarActivity {
         qAndA.put("How does one calculate force?", new String[] {
                 "mass * acceleration",
                 "mass / acceleration",
-                "(mass * acceleration) * pi"
+                "(mass * acceleration) * pi",
+                "pi * mass"
         });
         qAndA.put("What is the acronym for the international lab that claims ownership of the Large Hadron Collider?"
                 , new String[] {
                 "CERN",
                 "ARO",
-                "ELHC"
+                "ELHC",
+                "HELO"
         });
         qAndA.put("What is the metric value for gravity", new String[] {
                 "9.8 mt/sc^2",
                 "32 ft/sc^2",
-                "18 mt/sc^2"
+                "18 mt/sc^2",
+                "12 cm/sc^2"
         });
         qAndA.put("How many significant digits are in 93200.000", new String[] {
                 "3",
                 "5",
-                "8"
+                "8",
+                "2"
         });
         for (String s : qAndA.keySet()) {
             quiz.addQuestion(s, qAndA.get(s));
@@ -71,10 +79,12 @@ public class PhysicsQuiz extends ActionBarActivity {
     public void setLayout() {
         TextView question = (TextView) findViewById(R.id.question);
         question.setText(quiz.questions.get(this.index));
-        String[] answers = quiz.answers.get(this.index);
-        for (int i = 0; i < answers.length; i++) {
+        String[] answerArray = quiz.answers.get(this.index);
+        List<String> answers = Arrays.asList(answerArray);
+        Collections.shuffle(answers);
+        for (int i = 0; i < answers.size(); i++) {
             TextView answer = (TextView) ids[i];
-            answer.setText(answers[i]);
+            answer.setText(answers.get(i));
         }
         TextView title = (TextView) findViewById(R.id.title);
         title.setText("Math Quiz: Question " + numQuestions);
@@ -83,6 +93,7 @@ public class PhysicsQuiz extends ActionBarActivity {
     }
 
     public void submit(View v) {
+        this.numQuestions++;
         this.index++;
         Log.i("PhysicsQuiz", "Index is " + this.index);
         if (index < quiz.questions.size()) {
