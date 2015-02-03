@@ -86,12 +86,18 @@ public class PuppyQuiz extends ActionBarActivity {
         Collections.shuffle(answers);
         for (int i = 0; i < answers.size(); i++) {
             TextView answer = (TextView) ids[i];
-            answer.setText(answers.get(i));
+            String currAnswer = answers.get(i);
+            if (currAnswer.startsWith("A:")) {
+                this.correct = currAnswer.substring(2);
+                currAnswer = currAnswer.substring(2);
+            }
+            answer.setText(currAnswer);
         }
         TextView title = (TextView) findViewById(R.id.title);
         title.setText("Math Quiz: Question " + numQuestions);
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(false);
+        Log.i("PuppyQuiz", "Correct: " + this.correct);
     }
 
     public void submit(View v) {

@@ -22,6 +22,7 @@ public class MathQuiz extends ActionBarActivity {
     private int score;
     private int numQuestions;
     private int index;
+    private String correct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,25 +48,25 @@ public class MathQuiz extends ActionBarActivity {
     public void setUpQuiz() {
         Map<String, String[]> qAndA = new HashMap<>();
         qAndA.put("2 + 18", new String[] {
-                "20",
+                "A:20",
                 "36",
                 "42",
                 "22"
         });
         qAndA.put("Integrate 1/n", new String[] {
-                "ln|n| + c",
+                "A:ln|n| + c",
                 "log(n) + c",
                 "log|n| + c",
                 "ln(n + c)"
         });
         qAndA.put("Differentiate sin(x)", new String[] {
-                "cos(x)",
+                "A:cos(x)",
                 "-cos(x)",
                 "cos(x)sin(x)",
                 "sin(x)/cos(x)"
         });
         qAndA.put("What is 20% of 50% of 100?", new String[] {
-                "10",
+                "A:10",
                 "20",
                 "25",
                 "22"
@@ -83,12 +84,18 @@ public class MathQuiz extends ActionBarActivity {
         Collections.shuffle(answers);
         for (int i = 0; i < answers.size(); i++) {
             TextView answer = (TextView) ids[i];
-            answer.setText(answers.get(i));
+            String currAnswer = answers.get(i);
+            if (currAnswer.startsWith("A:")) {
+                this.correct = currAnswer.substring(2);
+                currAnswer = currAnswer.substring(2);
+            }
+            answer.setText(currAnswer);
         }
         TextView title = (TextView) findViewById(R.id.title);
         title.setText("Math Quiz: Question " + numQuestions);
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(false);
+        Log.i("PuppyQuiz", "Correct: " + this.correct);
     }
 
     public void submit(View v) {

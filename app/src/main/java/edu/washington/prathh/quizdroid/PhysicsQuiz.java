@@ -22,6 +22,7 @@ public class PhysicsQuiz extends ActionBarActivity {
     private int score;
     private int numQuestions;
     private int index;
+    private String correct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,26 +48,26 @@ public class PhysicsQuiz extends ActionBarActivity {
     public void setUpQuiz() {
         Map<String, String[]> qAndA = new HashMap<>();
         qAndA.put("How does one calculate force?", new String[] {
-                "mass * acceleration",
+                "A:mass * acceleration",
                 "mass / acceleration",
                 "(mass * acceleration) * pi",
                 "pi * mass"
         });
         qAndA.put("What is the acronym for the international lab that claims ownership of the Large Hadron Collider?"
                 , new String[] {
-                "CERN",
+                "A:CERN",
                 "ARO",
                 "ELHC",
                 "HELO"
         });
         qAndA.put("What is the metric value for gravity", new String[] {
-                "9.8 mt/sc^2",
+                "A:9.8 mt/sc^2",
                 "32 ft/sc^2",
                 "18 mt/sc^2",
                 "12 cm/sc^2"
         });
         qAndA.put("How many significant digits are in 93200.000", new String[] {
-                "3",
+                "A:3",
                 "5",
                 "8",
                 "2"
@@ -84,12 +85,18 @@ public class PhysicsQuiz extends ActionBarActivity {
         Collections.shuffle(answers);
         for (int i = 0; i < answers.size(); i++) {
             TextView answer = (TextView) ids[i];
-            answer.setText(answers.get(i));
+            String currAnswer = answers.get(i);
+            if (currAnswer.startsWith("A:")) {
+                this.correct = currAnswer.substring(2);
+                currAnswer = currAnswer.substring(2);
+            }
+            answer.setText(currAnswer);
         }
         TextView title = (TextView) findViewById(R.id.title);
         title.setText("Math Quiz: Question " + numQuestions);
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(false);
+        Log.i("PuppyQuiz", "Correct: " + this.correct);
     }
 
     public void submit(View v) {

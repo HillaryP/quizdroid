@@ -22,6 +22,7 @@ public class MarvelQuiz extends ActionBarActivity {
     private int score;
     private int numQuestions;
     private int index;
+    private String correct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +49,20 @@ public class MarvelQuiz extends ActionBarActivity {
         Map<String, String[]> qAndA = new HashMap<>();
         qAndA.put("What color was the Hulk originally intended to be before the iconic green was selected?",
                 new String[] {
-                "Grey",
+                "A:Grey",
                 "Blue",
                 "Red",
                 "Yellow"
         });
         qAndA.put("Marvel Comics co-owns the trademark to the phrase \"super hero\" with which company?",
                 new String[] {
-                "DC Comics",
+                "A:DC Comics",
                 "Pixar",
                 "Disney",
                 "Google"
         });
         qAndA.put("Who is the founder of Marvel Comics?", new String[] {
-                "Martin Goodman",
+                "A:Martin Goodman",
                 "Stan Lee",
                 "Steve Ditko",
                 "Joe Biden"
@@ -79,12 +80,18 @@ public class MarvelQuiz extends ActionBarActivity {
         Collections.shuffle(answers);
         for (int i = 0; i < answers.size(); i++) {
             TextView answer = (TextView) ids[i];
-            answer.setText(answers.get(i));
+            String currAnswer = answers.get(i);
+            if (currAnswer.startsWith("A:")) {
+                this.correct = currAnswer.substring(2);
+                currAnswer = currAnswer.substring(2);
+            }
+            answer.setText(currAnswer);
         }
         TextView title = (TextView) findViewById(R.id.title);
         title.setText("Math Quiz: Question " + numQuestions);
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(false);
+        Log.i("PuppyQuiz", "Correct: " + this.correct);
     }
 
     public void submit(View v) {
