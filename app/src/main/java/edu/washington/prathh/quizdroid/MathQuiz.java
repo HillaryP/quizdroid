@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -28,8 +29,15 @@ public class MathQuiz extends ActionBarActivity {
         this.numQuestions = 1;
         this.index = 0;
         this.mathQuiz = new Quiz();
+        Button b = (Button) findViewById(R.id.next);
+        b.setClickable(false);
         setUpQuiz();
         setLayout();
+    }
+
+    public void enableSumbit(View v) {
+        Button b = (Button) findViewById(R.id.next);
+        b.setClickable(true);
     }
 
     public void setUpQuiz() {
@@ -67,12 +75,17 @@ public class MathQuiz extends ActionBarActivity {
             TextView answer = (TextView) ids[i];
             answer.setText(answers[i]);
         }
+        TextView title = (TextView) findViewById(R.id.title);
+        title.setText("Math Quiz: Question " + numQuestions);
+        Button b = (Button) findViewById(R.id.next);
+        b.setClickable(false);
     }
 
     public void submit(View v) {
         this.index++;
+        this.numQuestions++;
         Log.i("MathQuiz", "Index is " + this.index);
-        if (index < 4) {
+        if (index < mathQuiz.questions.size()) {
             setLayout();
         } else {
             //end
