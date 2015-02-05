@@ -1,5 +1,7 @@
 package edu.washington.prathh.quizdroid;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +22,6 @@ public class MathQuiz extends ActionBarActivity {
     private View[] ids;
     private Quiz mathQuiz;
     private int score;
-    private int numQuestions;
     private int index;
     private String correct;
 
@@ -31,7 +32,6 @@ public class MathQuiz extends ActionBarActivity {
         this.ids = new View[]{findViewById(R.id.answer1), findViewById(R.id.answer2),
                 findViewById(R.id.answer3), findViewById(R.id.answer4)};
         this.score = 0;
-        this.numQuestions = 1;
         this.index = 0;
         this.mathQuiz = new Quiz();
         Button b = (Button) findViewById(R.id.next);
@@ -92,7 +92,7 @@ public class MathQuiz extends ActionBarActivity {
             answer.setText(currAnswer);
         }
         TextView title = (TextView) findViewById(R.id.title);
-        title.setText("Math Quiz: Question " + numQuestions);
+        title.setText("Math Quiz: Question " + (index + 1));
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(false);
         Log.i("PuppyQuiz", "Correct: " + this.correct);
@@ -100,12 +100,23 @@ public class MathQuiz extends ActionBarActivity {
 
     public void submit(View v) {
         this.index++;
-        this.numQuestions++;
         Log.i("MathQuiz", "Index is " + this.index);
+        Intent summary = new Intent(this, Summary.class);
+        summary.putExtra("score", score);
+        summary.putExtra("index", index);
+        summary.putExtra("correct", correct);
         if (index < mathQuiz.questions.size()) {
-            setLayout();
+            summary.putExtra("last", false);
+            startActivityForResult(summary, 1000);
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    setLayout();
+                }
+            }, 4000);
         } else {
-            //end
+            summary.putExtra("last", true);
+            startActivityForResult(summary, 1000);
         }
     }
 

@@ -112,6 +112,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.washington.prathh.quizdroid.MainActivity" />
         </activity>
+        <activity
+            android:name=".Summary"
+            android:label="@string/title_activity_puppy_summary"
+            android:parentActivityName=".PuppyQuiz" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.washington.prathh.quizdroid.PuppyQuiz" />
+        </activity>
     </application>
 
 </manifest>
