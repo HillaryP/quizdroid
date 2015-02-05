@@ -19,7 +19,8 @@
     <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:id="@+id/group">
         <RadioButton android:text=""
             android:id="@+id/answer1"
             android:layout_width="fill_parent"

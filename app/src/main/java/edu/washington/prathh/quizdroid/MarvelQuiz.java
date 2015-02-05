@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.Arrays;
@@ -24,6 +25,7 @@ public class MarvelQuiz extends ActionBarActivity {
     private int score;
     private int index;
     private String correct;
+    private String guess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class MarvelQuiz extends ActionBarActivity {
     }
 
     public void enableSubmit(View v) {
+        this.guess = ((Button) v).getText().toString();
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(true);
     }
@@ -76,6 +79,8 @@ public class MarvelQuiz extends ActionBarActivity {
         TextView question = (TextView) findViewById(R.id.question);
         question.setText(quiz.questions.get(this.index));
         String[] answerArray = quiz.answers.get(this.index);
+        RadioGroup group = (RadioGroup) findViewById(R.id.group);
+        group.clearCheck();
         List<String> answers = Arrays.asList(answerArray);
         Collections.shuffle(answers);
         for (int i = 0; i < answers.size(); i++) {
@@ -96,11 +101,15 @@ public class MarvelQuiz extends ActionBarActivity {
 
     public void submit(View v) {
         this.index++;
+        if (this.guess.equals(this.correct)) {
+            this.score++;
+        }
         Log.i("MarvelQuiz", "Index is " + this.index);
         Intent summary = new Intent(this, Summary.class);
         summary.putExtra("score", score);
         summary.putExtra("index", index);
         summary.putExtra("correct", correct);
+        summary.putExtra("guess", guess);
         if (index < quiz.questions.size()) {
             summary.putExtra("last", false);
             startActivityForResult(summary, 1000);

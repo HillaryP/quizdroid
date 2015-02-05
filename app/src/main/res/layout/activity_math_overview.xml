@@ -35,7 +35,7 @@ Look no further than this quiz! Test your skills and maybe learn a thing or two.
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's Get Started..."
+        android:text="Begin"
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
