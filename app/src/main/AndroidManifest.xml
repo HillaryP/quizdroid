@@ -17,38 +17,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SummaryMath"
-            android:label="@string/title_activity_summary_math"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".SummaryPhysics"
-            android:label="@string/title_activity_summary_physics"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".SummaryMarvel"
-            android:label="@string/title_activity_summary_marvel"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".SummaryPuppies"
-            android:label="@string/title_activity_summary_puppies"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
             android:name=".MathQuiz"
             android:label="@string/title_activity_math_quiz"
             android:parentActivityName=".MainActivity" >
