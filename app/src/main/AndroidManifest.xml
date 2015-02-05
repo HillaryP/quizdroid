@@ -49,38 +49,6 @@
                 android:value="edu.washington.prathh.quizdroid.MainActivity" />
         </activity>
         <activity
-            android:name=".MathOverview"
-            android:label="@string/title_activity_math_overview"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".PhysicsOverview"
-            android:label="@string/title_activity_physics_overview"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".MarvelOverview"
-            android:label="@string/title_activity_marvel_overview"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".PuppyOverview"
-            android:label="@string/title_activity_puppy_overview"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
             android:name=".MathQuiz"
             android:label="@string/title_activity_math_quiz"
             android:parentActivityName=".MainActivity" >
@@ -119,6 +87,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.washington.prathh.quizdroid.PuppyQuiz" />
+        </activity>
+        <activity
+            android:name=".GenericOverview"
+            android:label="@string/title_activity_generic_summary"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.washington.prathh.quizdroid.MainActivity" />
         </activity>
     </application>
 

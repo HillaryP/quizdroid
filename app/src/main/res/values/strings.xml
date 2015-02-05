@@ -19,5 +19,6 @@
     <string name="title_activity_physics_quiz">PhysicsQuiz</string>
     <string name="title_activity_marvel_quiz">MarvelQuiz</string>
     <string name="title_activity_puppy_summary">PuppySummary</string>
+    <string name="title_activity_generic_summary">GenericSummary</string>
 
 </resources>
