@@ -20,5 +20,8 @@
     <string name="title_activity_marvel_quiz">MarvelQuiz</string>
     <string name="title_activity_puppy_summary">PuppySummary</string>
     <string name="title_activity_generic_summary">GenericSummary</string>
+    <string name="title_activity_quiz_and_answers">QuizAndAnswers</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_quiz_and_answer">QuizAndAnswer</string>
 
 </resources>

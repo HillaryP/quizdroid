@@ -1,0 +1,19 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.washington.prathh.quizdroid.QuizAndAnswer"
+    tools:ignore="MergeRootFrame" >
+    <fragment android:name="edu.washington.prathh.quizdroid.QuizAndAnswer$OverviewFragment"
+        android:id="@+id/overview"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+    <fragment android:name="edu.washington.prathh.quizdroid.QuizAndAnswer$QuizFragment"
+        android:id="@+id/quiz"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+</FrameLayout>

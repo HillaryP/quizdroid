@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void getSummary(View v) {
         Log.i(ACTIVITY, "Button click");
-        Intent intent = new Intent(this, GenericOverview.class);
+        Intent intent = new Intent(this, QuizAndAnswer.class);
         switch (v.getId()) {
             case R.id.mathButton:
                 Log.i(ACTIVITY, "Math Button pushed");
