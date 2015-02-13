@@ -17,46 +17,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MathQuiz"
-            android:label="@string/title_activity_math_quiz"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".PuppyQuiz"
-            android:label="@string/title_activity_puppy_quiz"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".PhysicsQuiz"
-            android:label="@string/title_activity_physics_quiz"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".MarvelQuiz"
-            android:label="@string/title_activity_marvel_quiz"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.MainActivity" />
-        </activity>
-        <activity
-            android:name=".Summary"
-            android:label="@string/title_activity_puppy_summary"
-            android:parentActivityName=".PuppyQuiz" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.washington.prathh.quizdroid.PuppyQuiz" />
-        </activity>
-        <activity
             android:name=".QuizAndAnswer"
             android:label="@string/title_activity_quiz_and_answer"
             android:parentActivityName=".MainActivity" >

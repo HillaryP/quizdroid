@@ -2,6 +2,7 @@ package edu.washington.prathh.quizdroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -32,7 +33,7 @@ public class QuizAndAnswer extends ActionBarActivity {
     private String guess;
     private String correct;
     private int score;
-    private  int index;
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class QuizAndAnswer extends ActionBarActivity {
             public void onClick(View v) {
                 Bundle args = new Bundle();
                 args.putString("className", className);
+                args.putInt("index", index);
                 quiz.setArguments(args);
 
                 getSupportFragmentManager()
@@ -90,6 +92,24 @@ public class QuizAndAnswer extends ActionBarActivity {
         this.guess = ((Button) v).getText().toString();
         Button b = (Button) findViewById(R.id.next);
         b.setClickable(true);
+    }
+
+    public void submit(View v) {
+        QuizFragment quiz = new QuizFragment();
+        this.index++;
+        if (this.guess.equals(this.correct)) {
+            this.score++;
+        }
+        Log.i("QuizAndAnswer", "Index is " + this.index);
+        Bundle args = new Bundle();
+        args.putString("className", className);
+        args.putInt("index", index);
+        quiz.setArguments(args);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, quiz, "QUIZ")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
     }
 
     @Override
@@ -119,10 +139,10 @@ public class QuizAndAnswer extends ActionBarActivity {
      */
     public static class QuizFragment extends Fragment {
         private View[] ids;
-        private Quiz quiz;
-        private String correct;
-        private String guess;
+        Quiz quiz;
+        String correct;
         String className;
+        int index;
 
         public QuizFragment() {
         }
@@ -131,14 +151,13 @@ public class QuizAndAnswer extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_quiz_and_answer, container, false);
-
             quiz = new Quiz();
             this.ids = new View[]{rootView.findViewById(R.id.answer1), rootView.findViewById(R.id.answer2),
                     rootView.findViewById(R.id.answer3), rootView.findViewById(R.id.answer4)};
             quiz.getQuestions(className);
             TextView question = (TextView) rootView.findViewById(R.id.question);
-            question.setText(quiz.questions.get(0));
-            String[] answerArray = quiz.answers.get(0);
+            question.setText(quiz.questions.get(index));
+            String[] answerArray = quiz.answers.get(index);
             RadioGroup group = (RadioGroup) rootView.findViewById(R.id.group);
             group.clearCheck();
             List<String> answers = Arrays.asList(answerArray);
@@ -153,7 +172,7 @@ public class QuizAndAnswer extends ActionBarActivity {
                 answer.setText(currAnswer);
             }
             TextView title = (TextView) rootView.findViewById(R.id.title);
-            title.setText(className + " Quiz: Question " + (1));
+            title.setText(className + " Quiz: Question " + (index + 1));
             Button b = (Button) rootView.findViewById(R.id.next);
             b.setClickable(false);
             Log.i("QuizFragment", "Correct: " + this.correct);
@@ -166,6 +185,7 @@ public class QuizAndAnswer extends ActionBarActivity {
             super.onCreate(bundle);
             if (getArguments() != null) {
                 className = getArguments().getString("className");
+                index = getArguments().getInt("index");
             }
         }
 
