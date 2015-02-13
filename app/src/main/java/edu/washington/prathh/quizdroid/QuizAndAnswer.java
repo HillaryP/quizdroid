@@ -16,34 +16,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class QuizAndAnswer extends ActionBarActivity {
-    private Map<String, String> mapping;
+    private String className;
+    private String guess;
+    private String correct;
+    private int score;
+    private  int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_and_answer);
-        mapping = new HashMap<>();
-        setUpMapping(mapping);
-        String className = getIntent().getStringExtra("class");
+        className = getIntent().getStringExtra("class");
 
         if (savedInstanceState == null) {
             OverviewFragment overview = new OverviewFragment();
             Log.i("QuizAndAnswer.class", "Fragment and associated activity: "
                     + overview);
+
             Bundle args = new Bundle();
-            args.putString("title", className + " Quiz");
-            args.putString("description", mapping.get(className));
+            args.putString("className", className);
             overview.setArguments(args);
+
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, overview)
+                    .add(R.id.container, overview, "OVERVIEW")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
 
             switch (className) {
@@ -59,15 +67,29 @@ public class QuizAndAnswer extends ActionBarActivity {
         }
     }
 
-    public void setUpMapping(Map<String, String> mapping) {
-        mapping.put("Math", "Want to learn more about math?\n" +
-                "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
-        mapping.put("Physics", "Want to learn more about physics?\n" +
-                "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
-        mapping.put("Marvel", "Think you're a hero?\n" +
-                "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
-        mapping.put("Puppies", "Who doesn't love a quiz about puppies?\n" +
-                "Look no further than this quiz! Test your knowledge and maybe learn a thing or two.");
+    public void begin(View v) {
+        final QuizFragment quiz = new QuizFragment();
+        Log.i("QuizAndAnswer", "Begin function called");
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putString("className", className);
+                quiz.setArguments(args);
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, quiz, "QUIZ")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
+            }
+        });
+    }
+
+    public void enableSubmit(View v) {
+        this.guess = ((Button) v).getText().toString();
+        Button b = (Button) findViewById(R.id.next);
+        b.setClickable(true);
     }
 
     @Override
@@ -93,9 +115,14 @@ public class QuizAndAnswer extends ActionBarActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * Quiz Fragment for storing and displaying Q and A
      */
     public static class QuizFragment extends Fragment {
+        private View[] ids;
+        private Quiz quiz;
+        private String correct;
+        private String guess;
+        String className;
 
         public QuizFragment() {
         }
@@ -104,13 +131,64 @@ public class QuizAndAnswer extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_quiz_and_answer, container, false);
+
+            quiz = new Quiz();
+            this.ids = new View[]{rootView.findViewById(R.id.answer1), rootView.findViewById(R.id.answer2),
+                    rootView.findViewById(R.id.answer3), rootView.findViewById(R.id.answer4)};
+            quiz.getQuestions(className);
+            TextView question = (TextView) rootView.findViewById(R.id.question);
+            question.setText(quiz.questions.get(0));
+            String[] answerArray = quiz.answers.get(0);
+            RadioGroup group = (RadioGroup) rootView.findViewById(R.id.group);
+            group.clearCheck();
+            List<String> answers = Arrays.asList(answerArray);
+            Collections.shuffle(answers);
+            for (int i = 0; i < answers.size(); i++) {
+                TextView answer = (TextView) ids[i];
+                String currAnswer = answers.get(i);
+                if (currAnswer.startsWith("A:")) {
+                    this.correct = currAnswer.substring(2);
+                    currAnswer = currAnswer.substring(2);
+                }
+                answer.setText(currAnswer);
+            }
+            TextView title = (TextView) rootView.findViewById(R.id.title);
+            title.setText(className + " Quiz: Question " + (1));
+            Button b = (Button) rootView.findViewById(R.id.next);
+            b.setClickable(false);
+            Log.i("QuizFragment", "Correct: " + this.correct);
             return rootView;
+        }
+
+        @Override
+        public void onCreate(Bundle bundle) {
+            Log.i("QuizFragment", "OnCreate called");
+            super.onCreate(bundle);
+            if (getArguments() != null) {
+                className = getArguments().getString("className");
+            }
+        }
+
+        public static QuizFragment newInstance(String className) {
+            QuizFragment f = new QuizFragment();
+            Log.i("QuizFragment", "NewInstance called");
+
+            // Supply index input as an argument.
+            Bundle args = new Bundle();
+            args.putString("className", className);
+            f.setArguments(args);
+
+            return f;
         }
     }
 
+    /**
+     * Overview Fragment for storing and displaying quiz information
+     */
     public static class OverviewFragment extends Fragment {
-        String titleText;
-        String description;
+        String className;
+        Map<String, String> mapping;
+        Button button;
 
         public OverviewFragment() {
             Log.i("OverviewFragment", "Constructor called");
@@ -134,32 +212,34 @@ public class QuizAndAnswer extends ActionBarActivity {
             Log.i("OverviewFragment", "OnCreate called");
             super.onCreate(bundle);
             if (getArguments() != null) {
-                titleText = getArguments().getString("title");
-                description = getArguments().getString("description");
+                className = getArguments().getString("className");
+                mapping = new HashMap<>();
+                setUpMapping(mapping);
             }
+        }
+
+        public void setUpMapping(Map<String, String> mapping) {
+            mapping.put("Math", "Want to learn more about math?\n" +
+                    "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
+            mapping.put("Physics", "Want to learn more about physics?\n" +
+                    "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
+            mapping.put("Marvel", "Think you're a hero?\n" +
+                    "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
+            mapping.put("Puppies", "Who doesn't love a quiz about puppies?\n" +
+                    "Look no further than this quiz! Test your knowledge and maybe learn a thing or two.");
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             Log.i("OverviewFragment", "OnCreateView called");
+
             View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
             TextView titleText = (TextView) rootView.findViewById(R.id.textView);
-            titleText.setText(this.titleText);
+            titleText.setText(this.className + " Quiz");
             TextView description = (TextView) rootView.findViewById(R.id.textView2);
-            description.setText(this.description);
-
-            Button button = (Button) rootView.findViewById(R.id.button);
-            View.OnClickListener listener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i("GenericOverview", "Button clicked");
-                    //getSupportFragmentManager().beginTransaction()
-                    //        .add(R.id.container, new QuizFragment())
-                    //        .commit();
-                }
-            };
-            button.setOnClickListener(listener);
+            description.setText(this.mapping.get(this.className));
+            this.button = (Button) rootView.findViewById(R.id.button);
             return rootView;
         }
     }

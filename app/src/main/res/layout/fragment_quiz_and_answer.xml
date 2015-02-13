@@ -5,6 +5,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:id="@+id/quiz_and_answer"
     tools:context="edu.washington.prathh.quizdroid.QuizAndAnswer$PlaceholderFragment">
 
     <TextView android:text="Puppy Quiz: Question 1"
