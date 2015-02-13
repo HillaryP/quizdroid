@@ -34,18 +34,17 @@ public class QuizAndAnswer extends ActionBarActivity {
         String className = getIntent().getStringExtra("class");
 
         if (savedInstanceState == null) {
-            Fragment fragment = new OverviewFragment();
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction transaction = fm.beginTransaction();
-            transaction.add(R.id.container, fragment);
-            transaction.commit();
-
+            OverviewFragment overview = new OverviewFragment();
             Log.i("QuizAndAnswer.class", "Fragment and associated activity: "
-                    + fragment);
-
+                    + overview);
             Bundle args = new Bundle();
             args.putString("title", className + " Quiz");
             args.putString("description", mapping.get(className));
+            overview.setArguments(args);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, overview)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
 
             switch (className) {
                 case "Math":
@@ -57,18 +56,6 @@ public class QuizAndAnswer extends ActionBarActivity {
                 case "Puppies":
                     break;
             }
-
-            Button button = (Button) findViewById(R.id.button);
-            View.OnClickListener listener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i("GenericOverview", "Button clicked");
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.container, new QuizFragment())
-                            .commit();
-                }
-            };
-            button.setOnClickListener(listener);
         }
     }
 
@@ -122,27 +109,57 @@ public class QuizAndAnswer extends ActionBarActivity {
     }
 
     public static class OverviewFragment extends Fragment {
-        TextView titleText;
-        TextView description;
+        String titleText;
+        String description;
 
         public OverviewFragment() {
-            titleText = (TextView) super.getView().findViewById(R.id.textView);
-            description = (TextView) super.getView().findViewById(R.id.textView2);
+            Log.i("OverviewFragment", "Constructor called");
+        }
+
+        public static OverviewFragment newInstance(String title, String description) {
+            OverviewFragment f = new OverviewFragment();
+            Log.i("OverviewFragment", "NewInstance called");
+
+            // Supply index input as an argument.
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            args.putString("description", description);
+            f.setArguments(args);
+
+            return f;
         }
 
         @Override
         public void onCreate(Bundle bundle) {
+            Log.i("OverviewFragment", "OnCreate called");
             super.onCreate(bundle);
             if (getArguments() != null) {
-                titleText.setText(getArguments().getString("title"));
-                description.setText(getArguments().getString("description"));
+                titleText = getArguments().getString("title");
+                description = getArguments().getString("description");
             }
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            Log.i("OverviewFragment", "OnCreateView called");
             View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
+            TextView titleText = (TextView) rootView.findViewById(R.id.textView);
+            titleText.setText(this.titleText);
+            TextView description = (TextView) rootView.findViewById(R.id.textView2);
+            description.setText(this.description);
+
+            Button button = (Button) rootView.findViewById(R.id.button);
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i("GenericOverview", "Button clicked");
+                    //getSupportFragmentManager().beginTransaction()
+                    //        .add(R.id.container, new QuizFragment())
+                    //        .commit();
+                }
+            };
+            button.setOnClickListener(listener);
             return rootView;
         }
     }
