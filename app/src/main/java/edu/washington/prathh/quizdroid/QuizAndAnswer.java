@@ -1,12 +1,8 @@
 package edu.washington.prathh.quizdroid;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,12 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +23,7 @@ import java.util.Map;
 
 
 public class QuizAndAnswer extends ActionBarActivity {
+    private TopicBuilder topics;
     private String className;
     private String guess;
     private String correct;
@@ -41,6 +35,7 @@ public class QuizAndAnswer extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_and_answer);
         className = getIntent().getStringExtra("class");
+        topics = TopicBuilder.getInstance();
 
         if (savedInstanceState == null) {
             OverviewFragment overview = new OverviewFragment();
@@ -151,11 +146,10 @@ public class QuizAndAnswer extends ActionBarActivity {
     }
 
     /**
-     * Quiz Fragment for storing and displaying Q and A
+     * QuizOrig Fragment for storing and displaying Q and A
      */
     public static class QuizFragment extends Fragment {
         private View[] ids;
-        Quiz quiz;
         String correct;
         String className;
         int index;
@@ -166,28 +160,30 @@ public class QuizAndAnswer extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_quiz_and_answer, container, false);
-            quiz = new Quiz();
             this.ids = new View[]{rootView.findViewById(R.id.answer1), rootView.findViewById(R.id.answer2),
                     rootView.findViewById(R.id.answer3), rootView.findViewById(R.id.answer4)};
-            quiz.getQuestions(className);
+
+            int classIndex = TopicBuilder.getInstance().getCurrentTopicIndex(className);
+            Topic topic = TopicBuilder.getInstance().getTopicList().get(classIndex);
+            Quiz quiz = topic.getQAndA().get(index);
+
             TextView question = (TextView) rootView.findViewById(R.id.question);
-            question.setText(quiz.questions.get(index));
-            String[] answerArray = quiz.answers.get(index);
+            question.setText(quiz.getQuestion());
+            String[] answerArray = quiz.getAnswers();
             RadioGroup group = (RadioGroup) rootView.findViewById(R.id.group);
             group.clearCheck();
+
             List<String> answers = Arrays.asList(answerArray);
+            this.correct = answerArray[quiz.getCorrectIndex()];
             Collections.shuffle(answers);
             for (int i = 0; i < answers.size(); i++) {
                 TextView answer = (TextView) ids[i];
                 String currAnswer = answers.get(i);
-                if (currAnswer.startsWith("A:")) {
-                    this.correct = currAnswer.substring(2);
-                    currAnswer = currAnswer.substring(2);
-                }
                 answer.setText(currAnswer);
             }
+
             TextView title = (TextView) rootView.findViewById(R.id.title);
-            title.setText(className + " Quiz: Question " + (index + 1));
+            title.setText(className + ": Question " + (index + 1));
             Button b = (Button) rootView.findViewById(R.id.next);
             b.setClickable(false);
             Log.i("QuizFragment", "Correct: " + this.correct);
@@ -223,22 +219,20 @@ public class QuizAndAnswer extends ActionBarActivity {
      * Overview Fragment for storing and displaying quiz information
      */
     public static class OverviewFragment extends Fragment {
-        String className;
-        Map<String, String> mapping;
+        int classIndex;
         Button button;
 
         public OverviewFragment() {
             Log.i("OverviewFragment", "Constructor called");
         }
 
-        public static OverviewFragment newInstance(String title, String description) {
+        public static OverviewFragment newInstance(String className) {
             OverviewFragment f = new OverviewFragment();
             Log.i("OverviewFragment", "NewInstance called");
 
             // Supply index input as an argument.
             Bundle args = new Bundle();
-            args.putString("title", title);
-            args.putString("description", description);
+            args.putString("className", className);
             f.setArguments(args);
 
             return f;
@@ -249,21 +243,9 @@ public class QuizAndAnswer extends ActionBarActivity {
             Log.i("OverviewFragment", "OnCreate called");
             super.onCreate(bundle);
             if (getArguments() != null) {
-                className = getArguments().getString("className");
-                mapping = new HashMap<>();
-                setUpMapping(mapping);
+                String className = getArguments().getString("className");
+                classIndex = TopicBuilder.getInstance().getCurrentTopicIndex(className);
             }
-        }
-
-        public void setUpMapping(Map<String, String> mapping) {
-            mapping.put("Math", "Want to learn more about math?\n" +
-                    "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
-            mapping.put("Physics", "Want to learn more about physics?\n" +
-                    "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
-            mapping.put("Marvel", "Think you're a hero?\n" +
-                    "Look no further than this quiz! Test your skills and maybe learn a thing or two.");
-            mapping.put("Puppies", "Who doesn't love a quiz about puppies?\n" +
-                    "Look no further than this quiz! Test your knowledge and maybe learn a thing or two.");
         }
 
         @Override
@@ -273,9 +255,9 @@ public class QuizAndAnswer extends ActionBarActivity {
 
             View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
             TextView titleText = (TextView) rootView.findViewById(R.id.textView);
-            titleText.setText(this.className + " Quiz");
+            titleText.setText(TopicBuilder.getInstance().getTitles().get(classIndex));
             TextView description = (TextView) rootView.findViewById(R.id.textView2);
-            description.setText(this.mapping.get(this.className));
+            description.setText(TopicBuilder.getInstance().getTopicList().get(classIndex).getLongDescription());
             this.button = (Button) rootView.findViewById(R.id.button);
             return rootView;
         }

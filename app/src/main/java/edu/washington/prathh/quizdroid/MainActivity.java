@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -14,8 +17,31 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        List<Topic> topics = TopicBuilder.getInstance().getTopicList();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        List<String> names = TopicBuilder.getInstance().getTitles();
+
+        TextView mathButton = (TextView) findViewById(R.id.mathButton);
+        mathButton.setText(names.get(1));
+        TextView mathDescription = (TextView) findViewById(R.id.math_description);
+        mathDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Math")).getShortDescription());
+
+        TextView physicsButton = (TextView) findViewById(R.id.physicsButton);
+        physicsButton.setText(names.get(2));
+        TextView physicsDescription = (TextView) findViewById(R.id.physics_description);
+        physicsDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Physics")).getShortDescription());
+
+        TextView marvelButton = (TextView) findViewById(R.id.marvelButton);
+        marvelButton.setText(names.get(3));
+        TextView marvelDescription = (TextView) findViewById(R.id.marvel_description);
+        marvelDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Marvel")).getShortDescription());
+
+        TextView puppyButton = (TextView) findViewById(R.id.puppyButton);
+        puppyButton.setText(names.get(0));
+        TextView puppyDescription = (TextView) findViewById(R.id.puppy_description);
+        puppyDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Puppies")).getShortDescription());
+
         Log.i(ACTIVITY, "App created");
     }
 
