@@ -38,8 +38,7 @@
             android:background="#ff16415c"
             android:textColor="#ffffffff"
             android:textStyle="bold"
-            android:clickable="true"
-            android:onClick="getSummary"/>
+            android:clickable="true"/>
         </LinearLayout>
 
     <LinearLayout
@@ -71,8 +70,7 @@
             android:background="#ff16415c"
             android:textColor="#ffffffff"
             android:textStyle="bold"
-            android:clickable="true"
-            android:onClick="getSummary"/>
+            android:clickable="true"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
@@ -103,8 +101,7 @@
             android:background="#ff16415c"
             android:textColor="#ffffffff"
             android:textStyle="bold"
-            android:clickable="true"
-            android:onClick="getSummary"/>
+            android:clickable="true"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
@@ -134,7 +131,6 @@
             android:background="#ff16415c"
             android:textColor="#ffffffff"
             android:textStyle="bold"
-            android:clickable="true"
-            android:onClick="getSummary"/>
+            android:clickable="true"/>
     </LinearLayout>
 </LinearLayout>
