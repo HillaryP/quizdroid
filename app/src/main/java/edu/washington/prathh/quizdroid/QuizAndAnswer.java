@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,23 +55,11 @@ public class QuizAndAnswer extends ActionBarActivity {
                     .beginTransaction()
                     .add(R.id.container, overview, "OVERVIEW")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
-
-            switch (className) {
-                case "Math":
-                    break;
-                case "Physics":
-                    break;
-                case "Marvel":
-                    break;
-                case "Puppies":
-                    break;
-            }
         }
     }
 
     public void begin(View v) {
         final QuizFragment quiz = new QuizFragment();
-        Log.i("QuizAndAnswer", "Begin function called");
         Button button = (Button)findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +77,11 @@ public class QuizAndAnswer extends ActionBarActivity {
         });
     }
 
+    public void setCorrect(String s) {
+        this.correct = s;
+        Log.i("QuizAndAnswer", "Correct set to " + this.correct);
+    }
+
     public void enableSubmit(View v) {
         this.guess = ((Button) v).getText().toString();
         Button b = (Button) findViewById(R.id.next);
@@ -95,21 +89,43 @@ public class QuizAndAnswer extends ActionBarActivity {
     }
 
     public void submit(View v) {
-        QuizFragment quiz = new QuizFragment();
+        SummariesFragment summary = new SummariesFragment();
         this.index++;
         if (this.guess.equals(this.correct)) {
             this.score++;
         }
         Log.i("QuizAndAnswer", "Index is " + this.index);
-        Bundle args = new Bundle();
-        args.putString("className", className);
-        args.putInt("index", index);
-        quiz.setArguments(args);
+
+        Bundle summaryArgs = new Bundle();
+        summaryArgs.putString("guess", this.guess);
+        summaryArgs.putString("correct", this.correct);
+        summaryArgs.putInt("question_number", this.index);
+        summaryArgs.putInt("score", score);
+        summaryArgs.putBoolean("last", this.index == 4);
+        summary.setArguments(summaryArgs);
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, quiz, "QUIZ")
+                .replace(R.id.container, summary, "SUMMARY")
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
+    }
+
+    public void goBack(View v) {
+        Button b = (Button) findViewById(R.id.next_question);
+        if (b.getText().equals("Finish")) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } else {
+            QuizFragment quiz = new QuizFragment();
+            Bundle args = new Bundle();
+            args.putString("className", className);
+            args.putInt("index", index);
+            quiz.setArguments(args);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, quiz, "QUIZ")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commit();
+        }
     }
 
     @Override
@@ -144,8 +160,7 @@ public class QuizAndAnswer extends ActionBarActivity {
         String className;
         int index;
 
-        public QuizFragment() {
-        }
+        public QuizFragment() { }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -176,6 +191,8 @@ public class QuizAndAnswer extends ActionBarActivity {
             Button b = (Button) rootView.findViewById(R.id.next);
             b.setClickable(false);
             Log.i("QuizFragment", "Correct: " + this.correct);
+            QuizAndAnswer parent = (QuizAndAnswer) getActivity();
+            parent.setCorrect(this.correct);
             return rootView;
         }
 
@@ -260,6 +277,57 @@ public class QuizAndAnswer extends ActionBarActivity {
             TextView description = (TextView) rootView.findViewById(R.id.textView2);
             description.setText(this.mapping.get(this.className));
             this.button = (Button) rootView.findViewById(R.id.button);
+            return rootView;
+        }
+    }
+
+    /**
+     * Summaries Fragment for storing and displaying a user's progress
+     */
+    public static class SummariesFragment extends Fragment {
+        private String correct;
+        private String guess;
+        private int total;
+        private int score;
+        private boolean last;
+
+        public SummariesFragment() { }
+
+        public static SummariesFragment newInstance() {
+            SummariesFragment f = new SummariesFragment();
+            return f;
+        }
+
+        @Override
+        public void onCreate(Bundle bundle) {
+            super.onCreate(bundle);
+            if (getArguments() != null) {
+                correct = getArguments().getString("correct");
+                guess = getArguments().getString("guess");
+                total = getArguments().getInt("question_number");
+                score = getArguments().getInt("score");
+                last = getArguments().getBoolean("last");
+                Log.i("SUMMARIES", "total:" + total + ", score: "  + score);
+            }
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_summaries, container, false);
+            Button button = (Button) rootView.findViewById(R.id.next_question);
+            if (last) {
+                button.setText("Finish");
+            } else {
+                button.setText("Next Question");
+            }
+
+            TextView score = (TextView) rootView.findViewById(R.id.total_correct);
+            score.setText("You have answered " + this.score + "/" + this.total + " questions correctly.");
+            TextView correctAnswer = (TextView) rootView.findViewById(R.id.correct_answer);
+            correctAnswer.setText("Correct answer: " + correct);
+            TextView yourAnswer = (TextView) rootView.findViewById(R.id.your_answer);
+            yourAnswer.setText("Your answer: " + this.guess);
             return rootView;
         }
     }
