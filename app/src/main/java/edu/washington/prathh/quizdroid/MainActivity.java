@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -42,6 +43,14 @@ public class MainActivity extends ActionBarActivity {
         TextView puppyDescription = (TextView) findViewById(R.id.puppy_description);
         puppyDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Puppies")).getShortDescription());
 
+        Button preferences = (Button) findViewById(R.id.preferences);
+        preferences.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PreferencePage.class);
+                startActivity(intent);
+            }
+        });
         Log.i(ACTIVITY, "App created");
     }
 
