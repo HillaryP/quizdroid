@@ -1,13 +1,16 @@
 package edu.washington.prathh.quizdroid;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -15,6 +18,10 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
     private final String ACTIVITY = "MainActivity";
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private String url;
+    private int minutes;
+    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +50,27 @@ public class MainActivity extends ActionBarActivity {
         TextView puppyDescription = (TextView) findViewById(R.id.puppy_description);
         puppyDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Puppies")).getShortDescription());
 
-        Button preferences = (Button) findViewById(R.id.preferences);
-        preferences.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PreferencePage.class);
-                startActivity(intent);
-            }
-        });
         Log.i(ACTIVITY, "App created");
+
+        start();
     }
 
+    public void start() {
+        Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, alarmIntent, 0);
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        manager.cancel(pendingIntent);
+        Log.i("MainActivity", "URL: " + this.url + " minutes: " + this.minutes);
+        int minutes = Integer.parseInt(
+                PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString("minute", "0"));
+        manager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), (long) (minutes * 60 * 1000), pendingIntent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -71,7 +82,8 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(MainActivity.this, PreferencePage.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
