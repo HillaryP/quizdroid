@@ -50,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
         puppyDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Puppies")).getShortDescription());
 
         Log.i(ACTIVITY, "App created");
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         ((QuizApp) getApplication()).start(Integer.parseInt(prefs.getString("minute", "0")));
     }
