@@ -21,7 +21,6 @@ public class MainActivity extends ActionBarActivity {
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
     private String url;
     private int minutes;
-    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +50,8 @@ public class MainActivity extends ActionBarActivity {
         puppyDescription.setText(topics.get(TopicBuilder.getInstance().getCurrentTopicIndex("Puppies")).getShortDescription());
 
         Log.i(ACTIVITY, "App created");
-
-        start();
-    }
-
-    public void start() {
-        Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, alarmIntent, 0);
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        manager.cancel(pendingIntent);
-        Log.i("MainActivity", "URL: " + this.url + " minutes: " + this.minutes);
-        int minutes = Integer.parseInt(
-                PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString("minute", "0"));
-        manager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), (long) (minutes * 60 * 1000), pendingIntent);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        ((QuizApp) getApplication()).start(Integer.parseInt(prefs.getString("minute", "0")));
     }
 
     @Override
