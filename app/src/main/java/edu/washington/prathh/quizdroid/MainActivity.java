@@ -1,17 +1,13 @@
 package edu.washington.prathh.quizdroid;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,10 +27,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         List<Topic> topics = TopicBuilder.getInstance().getTopicList();
         super.onCreate(savedInstanceState);
-
-        if (!isOnline()) {
-            dialog();
-        }
 
         setContentView(R.layout.activity_main);
         List<String> names = TopicBuilder.getInstance().getTitles();
@@ -63,15 +55,35 @@ public class MainActivity extends ActionBarActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         ((QuizApp) getApplication()).start(Integer.parseInt(prefs.getString("minute", "0")));
+
+        if (!isOnline()) {
+            dialog();
+        }
     }
 
     private boolean isOnline() {
         try {
-            ConnectivityManager cm = (ConnectivityManager)MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-            boolean isConnected = cm.getActiveNetworkInfo().isConnectedOrConnecting();
-            return isConnected;
+            ConnectivityManager connectivityManager =
+                    (ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            NetworkInfo mobileInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+            if ((wifiInfo != null && wifiInfo.isConnected()) || (mobileInfo != null && mobileInfo.isConnected())) {
+                return true;
+            }else{
+                return false;
+            }
         } catch (Exception e) {
+            Log.e("MainActivity", "Exception when getting ConnectivityManager: " + e.getMessage());
             return false;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isOnline()) {
+            dialog();
         }
     }
 
