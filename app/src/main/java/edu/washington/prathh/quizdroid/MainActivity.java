@@ -1,10 +1,17 @@
 package edu.washington.prathh.quizdroid;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,13 +26,16 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
     private final String ACTIVITY = "MainActivity";
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
-    private String url;
-    private int minutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         List<Topic> topics = TopicBuilder.getInstance().getTopicList();
         super.onCreate(savedInstanceState);
+
+        if (!isOnline()) {
+            dialog();
+        }
+
         setContentView(R.layout.activity_main);
         List<String> names = TopicBuilder.getInstance().getTitles();
 
@@ -53,6 +63,16 @@ public class MainActivity extends ActionBarActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         ((QuizApp) getApplication()).start(Integer.parseInt(prefs.getString("minute", "0")));
+    }
+
+    private boolean isOnline() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager)MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+            boolean isConnected = cm.getActiveNetworkInfo().isConnectedOrConnecting();
+            return isConnected;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -100,5 +120,31 @@ public class MainActivity extends ActionBarActivity {
                 break;
         };
         startActivity(intent);
+    }
+
+    public void dialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("You don't appear to be connected to the Internet.");
+        alertDialogBuilder.setPositiveButton("Check settings",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.setClassName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+                        startActivity(intent);
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
